@@ -7,29 +7,27 @@ our $VERSION = '0.001';
 
 requires 'new';
 
-my %functions_list = map { ($_ => 1) } qw(nsort_by rev_nsort_by rev_sort_by
-  sort_by uniq_by weighted_shuffle_by zip_by);
-my %functions_minmax = map { ($_ => 1) } qw(max_by min_by);
-
-foreach my $func (keys %functions_list, keys %functions_minmax) {
+foreach my $func (qw(nsort_by rev_nsort_by rev_sort_by sort_by
+                     uniq_by weighted_shuffle_by zip_by)) {
   my $sub = List::UtilsBy->can($func) // die "Function List::UtilsBy::$func not found";
-  if ($functions_list{$func}) {
-    no strict 'refs';
-    *$func = sub {
-      my ($self, $code) = @_;
-      return ref($self)->new($sub->($code, @$self));
-    };
-  } elsif ($functions_minmax{$func}) {
-    no strict 'refs';
-    *$func = sub {
-      my ($self, $code) = @_;
-      return scalar $sub->($code, @$self);
-    };
-    *{"all_$func"} = sub {
-      my ($self, $code) = @_;
-      return ref($self)->new($sub->($code, @$self));
-    };
-  }
+  no strict 'refs';
+  *$func = sub {
+    my ($self, $code) = @_;
+    return ref($self)->new($sub->($code, @$self));
+  };
+}
+
+foreach my $func (qw(max_by min_by)) {
+  my $sub = List::UtilsBy->can($func) // die "Function List::UtilsBy::$func not found";
+  no strict 'refs';
+  *$func = sub {
+    my ($self, $code) = @_;
+    return scalar $sub->($code, @$self);
+  };
+  *{"all_$func"} = sub {
+    my ($self, $code) = @_;
+    return ref($self)->new($sub->($code, @$self));
+  };
 }
 
 sub bundle_by {
