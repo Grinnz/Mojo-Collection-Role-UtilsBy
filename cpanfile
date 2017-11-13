@@ -1,4 +1,4 @@
-requires 'perl' => '5.010001';
+requires 'perl' => '5.008001';
 requires 'Role::Tiny' => '2.000001';
 requires 'List::UtilsBy' => '0.10';
 test_requires 'Test::More' => '0.88';
