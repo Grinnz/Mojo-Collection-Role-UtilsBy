@@ -9,9 +9,9 @@ requires 'new';
 
 my %functions_list = map { ($_ => 1) } qw(nsort_by rev_nsort_by rev_sort_by
   sort_by uniq_by weighted_shuffle_by zip_by);
-my %functions_scalar = map { ($_ => 1) } qw(max_by min_by);
+my %functions_minmax = map { ($_ => 1) } qw(max_by min_by);
 
-foreach my $func (keys %functions_list, keys %functions_scalar) {
+foreach my $func (keys %functions_list, keys %functions_minmax) {
   my $sub = List::UtilsBy->can($func) // die "Function List::UtilsBy::$func not found";
   if ($functions_list{$func}) {
     no strict 'refs';
@@ -19,11 +19,15 @@ foreach my $func (keys %functions_list, keys %functions_scalar) {
       my ($self, $code) = @_;
       return ref($self)->new($sub->($code, @$self));
     };
-  } elsif ($functions_scalar{$func}) {
+  } elsif ($functions_minmax{$func}) {
     no strict 'refs';
     *$func = sub {
       my ($self, $code) = @_;
       return scalar $sub->($code, @$self);
+    };
+    *{"all_$func"} = sub {
+      my ($self, $code) = @_;
+      return ref($self)->new($sub->($code, @$self));
     };
   }
 }
@@ -99,6 +103,22 @@ C<$_> and C<$_[0]> set to the current element in the iteration.
 
 L<Mojo::Collection::Role::UtilsBy> composes the following methods.
 
+=head2 all_max_by
+
+  my $max_collection = $c->all_max_by(sub { $_->num });
+
+Return a new collection containing all of the elements that share the
+numerically largest result from the passed function, using
+L<List::UtilsBy/"max_by">.
+
+=head2 all_min_by
+
+  my $min_collection = $c->all_min_by(sub { $_->num });
+
+Return a new collection containing all of the elements that share the
+numerically smallest result from the passed function, using
+L<List::UtilsBy/"min_by">.
+
 =head2 bundle_by
 
   my $bundled_collection = $c->bundle_by(sub { c(@_) }, $n);
@@ -119,30 +139,30 @@ from the passed function, using L<List::UtilsBy/"count_by">.
 
   my $extracted_collection = $c->extract_by(sub { $_->num > 5 });
 
-Remove elements from the collection that return true from the passed function
-using L<List::UtilsBy/"extract_by">, and return a new collection containing the
-removed elements.
+Remove elements from the collection that return true from the passed function,
+and return a new collection containing the removed elements, using
+L<List::UtilsBy/"extract_by">.
 
 =head2 extract_first_by
 
   my $extracted_element = $c->extract_first_by(sub { $_->name eq 'Fred' });
 
 Remove and return the first element from the collection that returns true from
-the passed function using L<List::UtilsBy/"extract_first_by">.
+the passed function, using L<List::UtilsBy/"extract_first_by">.
 
 =head2 max_by
 
   my $max_element = $c->max_by(sub { $_->num });
 
-Return the element from the collection that returns the numerically largest
-result from the passed function with L<List::UtilsBy/"max_by">.
+Return the (first) element from the collection that returns the numerically
+largest result from the passed function, using L<List::UtilsBy/"max_by">.
 
 =head2 min_by
 
   my $min_element = $c->min_by(sub { $_->num });
 
-Return the element from the collection that returns the numerically smallest
-result from the passed function with L<List::UtilsBy/"min_by">.
+Return the (first) element from the collection that returns the numerically
+smallest result from the passed function, using L<List::UtilsBy/"min_by">.
 
 =head2 nsort_by
 

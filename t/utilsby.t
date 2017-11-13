@@ -61,6 +61,7 @@ is_deeply( c("a", "bbb", "cc")->rev_nsort_by(sub { length $_ }), [ "bbb", "cc", 
 is_deeply( c()->max_by(sub {}), undef, 'empty list yields empty' );
 
 is_deeply( c(10)->max_by(sub { $_ }), 10, 'unit list yields value' );
+is_deeply( c(10)->all_max_by(sub { $_ }), [ 10 ], 'unit list yields unit list value' );
 
 is_deeply( c(10, 20)->max_by(sub { $_ }), 20, 'identity function on $_' );
 is_deeply( c(10, 20)->max_by(sub { $_[0] }), 20, 'identity function on $_[0]' );
@@ -68,11 +69,13 @@ is_deeply( c(10, 20)->max_by(sub { $_[0] }), 20, 'identity function on $_[0]' );
 is_deeply( c("a", "ccc", "bb")->max_by(sub { length $_ }), "ccc", 'length function' );
 
 is_deeply( c("a", "ccc", "bb", "ddd")->max_by(sub { length $_ }), "ccc", 'ties yield first' );
+is_deeply( c("a", "ccc", "bb", "ddd")->all_max_by(sub { length $_ }), [ "ccc", "ddd" ], 'ties yield all maximal' );
 
 ## min_by
 is_deeply( c()->min_by(sub {}), undef, 'empty list yields empty' );
 
 is_deeply( c(10)->min_by(sub { $_ }), 10, 'unit list yields value' );
+is_deeply( c(10)->all_min_by(sub { $_ }), [ 10 ], 'unit list yields unit list value' );
 
 is_deeply( c(10, 20)->min_by(sub { $_ }), 10, 'identity function on $_' );
 is_deeply( c(10, 20)->min_by(sub { $_[0] }), 10, 'identity function on $_[0]' );
@@ -80,6 +83,7 @@ is_deeply( c(10, 20)->min_by(sub { $_[0] }), 10, 'identity function on $_[0]' );
 is_deeply( c("a", "ccc", "bb")->min_by(sub { length $_ }), "a", 'length function' );
 
 is_deeply( c("a", "ccc", "bb", "e")->min_by(sub { length $_ }), "a", 'ties yield first' );
+is_deeply( c("a", "ccc", "bb", "ddd", "e")->all_min_by(sub { length $_ }), [ "a", "e" ], 'ties yield all minimal' );
 
 ## uniq_by
 is_deeply( c()->uniq_by(sub { }), [], 'empty list' );
