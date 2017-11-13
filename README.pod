@@ -38,7 +38,7 @@ input elements in bundles of (up to) C<$n>, using L<List::UtilsBy/"bundle_by">.
 
   my %counts = $c->count_by(sub { $_->name });
 
-Return a list of keys and values where the values are the number of times each
+Return a list of key-value pairs where the values are the number of times each
 key was returned from the passed function, using L<List::UtilsBy/"count_by">.
 
 =head2 extract_by
@@ -74,14 +74,14 @@ result from the passed function with L<List::UtilsBy/"min_by">.
 
   my $sorted_collection = $c->nsort_by(sub { $_->num });
 
-Return a new collection containing the elements sorted numerically with
-L<List::UtilsBy/"nsort_by">.
+Return a new collection containing the elements sorted numerically by the
+results from the passed function, using L<List::UtilsBy/"nsort_by">.
 
 =head2 partition_by
 
   my %collections = $c->partition_by(sub { $_->name });
 
-Return a list of keys and values where the values are collections of the
+Return a list of key-value pairs where the values are collections of the
 elements that returned that key from the passed function, using
 L<List::UtilsBy/"partition_by">.
 
@@ -90,35 +90,36 @@ L<List::UtilsBy/"partition_by">.
   my $sorted_collection = $c->rev_nsort_by(sub { $_->num });
 
 Return a new collection containing the elements sorted numerically in reverse
-with L<List::UtilsBy/"rev_nsort_by">.
+by the results from the passed function, using L<List::UtilsBy/"rev_nsort_by">.
 
 =head2 rev_sort_by
 
   my $sorted_collection = $c->rev_sort_by(sub { $_->name });
 
 Return a new collection containing the elements sorted lexically in reverse
-with L<List::UtilsBy/"rev_sort_by">.
+by the results from the passed function, using L<List::UtilsBy/"rev_sort_by">.
 
 =head2 sort_by
 
   my $sorted_collection = $c->sort_by(sub { $_->name });
 
-Return a new collection containing the elements sorted lexically with
-L<List::UtilsBy/"sort_by">.
+Return a new collection containing the elements sorted lexically by the results
+from the passed function, using L<List::UtilsBy/"sort_by">.
 
 =head2 uniq_by
 
   my $uniq_collection = $c->uniq_by(sub { $_->name });
 
 Return a new collection containing the elements that return stringwise unique
-values from the passed function with L<List::UtilsBy/"uniq_by">.
+values from the passed function, using L<List::UtilsBy/"uniq_by">.
 
 =head2 weighted_shuffle_by
 
   my $shuffled_collection = $c->weighted_shuffle_by(sub { $_->num });
 
 Return a new collection containing the elements shuffled with weighting
-using L<List::UtilsBy/"weighted_shuffle_by">.
+according to the results from the passed function, using
+L<List::UtilsBy/"weighted_shuffle_by">.
 
 =head1 BUGS
 
