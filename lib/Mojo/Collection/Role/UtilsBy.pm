@@ -5,28 +5,57 @@ use List::UtilsBy ();
 
 our $VERSION = '0.001';
 
-my %functions_list = map { ($_ => 1) } qw(bundle_by extract_by nsort_by
-  rev_nsort_by rev_sort_by sort_by uniq_by weighted_shuffle_by);
-my %functions_scalar = map { ($_ => 1) } qw(extract_first_by max_by min_by);
+requires 'new';
+
+my %functions_list = map { ($_ => 1) }
+  qw(nsort_by rev_nsort_by rev_sort_by sort_by uniq_by weighted_shuffle_by);
+my %functions_scalar = map { ($_ => 1) } qw(max_by min_by);
 
 foreach my $func (keys %functions_list, keys %functions_scalar) {
   my $sub = List::UtilsBy->can($func) // die "Function List::UtilsBy::$func not found";
   if ($functions_list{$func}) {
     no strict 'refs';
     *$func = sub {
-      my ($self, @args) = @_;
+      my ($self, $code) = @_;
       my $class = ref $self;
-      return $class->new($sub->(@args, \@$self)) if $func eq 'extract_by';
-      return $class->new($sub->(@args, @$self));
+      return $class->new($sub->($code, @$self));
     };
-  } else {
+  } elsif ($functions_scalar{$func}) {
     no strict 'refs';
     *$func = sub {
-      my ($self, @args) = @_;
-      return scalar $sub->(@args, \@$self) if $func eq 'extract_first_by';
-      return scalar $sub->(@args, @$self);
+      my ($self, $code) = @_;
+      return scalar $sub->($code, @$self);
     };
   }
+}
+
+sub bundle_by {
+  my ($self, $code, $n) = @_;
+  my $class = ref $self;
+  return $class->new(&List::UtilsBy::bundle_by($code, $n, @$self));
+}
+
+sub count_by {
+  my ($self, $code) = @_;
+  return &List::UtilsBy::count_by($code, @$self);
+}
+
+sub extract_by {
+  my ($self, $code) = @_;
+  my $class = ref $self;
+  return $class->new(&List::UtilsBy::extract_by($code, \@$self));
+}
+
+sub extract_first_by {
+  my ($self, $code) = @_;
+  return scalar &List::UtilsBy::extract_first_by($code, \@$self);
+}
+
+sub partition_by {
+  my ($self, $code) = @_;
+  my $class = ref $self;
+  return List::UtilsBy::bundle_by { ($_[0] => $class->new(@{$_[1]})) } 2,
+    &List::UtilsBy::partition_by($code, @$self);
 }
 
 1;
@@ -44,7 +73,10 @@ Mojo::Collection::Role::UtilsBy - List::UtilsBy methods for Mojo::Collection
   use List::Util 'product';
   say "Product of 3 elements: $_" for $c->bundle_by(sub { product(@_) }, 3)->each;
   
-  my $evens = $c->extract_by(sub { $_ % 2 == 0 }); # $c now contains only odds
+  my %partitions = $c->partition_by(sub { $_ % 4 });
+  # 0 => c(4,8,12), 1 => c(1,5,9), 2 => c(2,6,10), 3 => c(3,7,11)
+  
+  my $evens = $c->extract_by(sub { $_ % 2 == 0 }); # $c now contains only odd numbers
 
 =head1 DESCRIPTION
 
@@ -61,6 +93,13 @@ L<Mojo::Collection::Role::UtilsBy> composes the following methods.
 
 Return a new collection containing the results from the passed function, given
 input elements in bundles of (up to) C<$n>, using L<List::UtilsBy/"bundle_by">.
+
+=head2 count_by
+
+  my %counts = $c->count_by(sub { $_->name });
+
+Return a list of keys and values where the values are the number of times each
+key was returned from the passed function, using L<List::UtilsBy/"count_by">.
 
 =head2 extract_by
 
@@ -97,6 +136,14 @@ result from the passed function with L<List::UtilsBy/"min_by">.
 
 Return a new collection containing the elements sorted numerically with
 L<List::UtilsBy/"nsort_by">.
+
+=head2 partition_by
+
+  my %collections = $c->partition_by(sub { $_->name });
+
+Return a list of keys and values where the values are collections of the
+elements that returned that key from the passed function, using
+L<List::UtilsBy/"partition_by">.
 
 =head2 rev_nsort_by
 
