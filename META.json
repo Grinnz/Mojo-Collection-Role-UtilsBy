@@ -42,6 +42,9 @@
             "List::UtilsBy" : "0.10",
             "Role::Tiny" : "2.000001",
             "perl" : "5.010001"
+         },
+         "suggests" : {
+            "Mojolicious" : "7.43"
          }
       },
       "test" : {
