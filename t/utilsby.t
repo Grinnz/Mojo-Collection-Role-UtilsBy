@@ -122,6 +122,32 @@ is_deeply( c("b", "a")->count_by(sub { $_[0] }), { a => 1, b => 1 }, 'identity f
 is_deeply( c("a", "b", "cc", "dd", "eee")->count_by(sub { length $_ }),
            { 1 => 2, 2 => 2, 3 => 1 }, 'length function' );
 
+## zip_by
+is_deeply( c()->zip_by(sub { }), [], 'empty list' );
+
+is_deeply( c(c("a"), c("b"), c("c"))->zip_by(sub { c(@_) }), [ [ "a", "b", "c" ] ], 'singleton lists' );
+
+is_deeply( c(c("a", "b", "c"))->zip_by(sub { c(@_) }), [ [ "a" ], [ "b" ], [ "c" ] ], 'narrow lists' );
+
+is_deeply( c(c("a1", "a2"), c("b1", "b2"))->zip_by(sub { c(@_) }), [ [ "a1", "b1" ], [ "a2", "b2" ] ], 'zip with collections' );
+
+is_deeply( c(c("a1", "a2"), c("b1", "b2"))->zip_by(sub { join ",", @_ }), [ "a1,b1", "a2,b2" ], 'zip with join()' );
+
+is_deeply( c(c(1 .. 3), c(1 .. 2))->zip_by(sub { c(@_) }), [ [ 1, 1 ], [ 2, 2 ], [ 3, undef ] ], 'non-rectangular adds undef' );
+
+is_deeply( { @{ c(c(qw( one two three )), c(1, 2, 3))->zip_by(sub { @_ }) } }, { one => 1, two => 2, three => 3 }, 'itemfunc can return lists' );
+
+## unzip_by
+is_deeply( c()->unzip_by(sub { }), [], 'empty list' );
+
+is_deeply( c("a", "b", "c")->unzip_by(sub { $_ }), [ [ "a", "b", "c" ] ], 'identity function' );
+
+is_deeply( c("a", "b", "c")->unzip_by(sub { $_, $_ }), [ [ "a", "b", "c" ], [ "a", "b", "c" ] ], 'clone function' );
+
+is_deeply( c("a1", "b2", "c3")->unzip_by(sub { m/(.)/g }), [ [ "a", "b", "c" ], [ 1, 2, 3 ] ], 'regexp match function' );
+
+is_deeply( c("a", "b2", "c")->unzip_by(sub { m/(.)/g }), [ [ "a", "b", "c" ], [ undef, 2, undef ] ], 'non-rectangular adds undef' );
+
 ## extract_by
 {
   # We'll need a real collection to work on

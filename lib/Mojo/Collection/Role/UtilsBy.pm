@@ -7,8 +7,8 @@ our $VERSION = '0.001';
 
 requires 'new';
 
-my %functions_list = map { ($_ => 1) }
-  qw(nsort_by rev_nsort_by rev_sort_by sort_by uniq_by weighted_shuffle_by);
+my %functions_list = map { ($_ => 1) } qw(nsort_by rev_nsort_by rev_sort_by
+  sort_by uniq_by weighted_shuffle_by zip_by);
 my %functions_scalar = map { ($_ => 1) } qw(max_by min_by);
 
 foreach my $func (keys %functions_list, keys %functions_scalar) {
@@ -55,6 +55,13 @@ sub partition_by {
     &List::UtilsBy::partition_by($code, @$self) };
 }
 
+sub unzip_by {
+  my ($self, $code) = @_;
+  my $class = ref $self;
+  return $class->new(map { $class->new(@$_) }
+    &List::UtilsBy::unzip_by($code, @$self));
+}
+
 1;
 
 =head1 NAME
@@ -73,14 +80,20 @@ Mojo::Collection::Role::UtilsBy - List::UtilsBy methods for Mojo::Collection
   my $partitions = $c->partition_by(sub { $_ % 4 });
   # { 0 => c(4,8,12), 1 => c(1,5,9), 2 => c(2,6,10), 3 => c(3,7,11) }
   
+  my $halves_and_remainders = $c->unzip_by(sub { ($_ / 2, $_ % 2) });
+  # c(c(0,1,1,2,2,3,3,4,4,5,5,6), c(1,0,1,0,1,0,1,0,1,0,1,0))
+  
+  my $transposed = $halves_and_remainders->zip_by(sub { c(@_) });
+  # c(c(0,1), c(1,0), c(1,1), c(2,0), c(2,1), c(3,0), c(3,1), c(4,0), c(4,1), c(5,0), c(5,1), c(6,0))
+  
   my $evens = $c->extract_by(sub { $_ % 2 == 0 }); # $c now contains only odd numbers
 
 =head1 DESCRIPTION
 
 A role to augment L<Mojo::Collection> with methods that call functions from
-L<List::UtilsBy>. With the exception of L</"bundle_by">, all passed callbacks
-will be called with both C<$_> and C<$_[0]> set to the current element in the
-iteration.
+L<List::UtilsBy>. With the exception of L</"bundle_by"> and L</"zip_by"> which
+pass multiple elements in C<@_>, all passed callbacks will be called with both
+C<$_> and C<$_[0]> set to the current element in the iteration.
 
 =head1 METHODS
 
@@ -173,6 +186,16 @@ from the passed function, using L<List::UtilsBy/"sort_by">.
 Return a new collection containing the elements that return stringwise unique
 values from the passed function, using L<List::UtilsBy/"uniq_by">.
 
+=head2 unzip_by
+
+  my $collection_of_collections = $c->unzip_by(sub { ($_->name, $_->num) });
+  my ($names, $nums) = @$collection_of_collections;
+
+Return a collection of collections where each collection contains the results
+at the corresponding position from the lists returned by the passed function,
+using L<List::UtilsBy/"unzip_by">. If the lists are uneven, the collections
+will contain C<undef> in the positions without a corresponding value.
+
 =head2 weighted_shuffle_by
 
   my $shuffled_collection = $c->weighted_shuffle_by(sub { $_->num });
@@ -180,6 +203,17 @@ values from the passed function, using L<List::UtilsBy/"uniq_by">.
 Return a new collection containing the elements shuffled with weighting
 according to the results from the passed function, using
 L<List::UtilsBy/"weighted_shuffle_by">.
+
+=head2 zip_by
+
+  my $zipped_collection = $c->zip_by(sub { c(@_) });
+
+Return a new collection containing the results from the passed function when
+invoked with values from the corresponding position across all inner arrays,
+using L<List::UtilsBy/"zip_by">. This method must be called on a collection
+that only contains array references or collection objects. The passed function
+will receive each list of elements in C<@_>. If the arrays are uneven, C<undef>
+will be passed in the positions without a corresponding value.
 
 =head1 BUGS
 
