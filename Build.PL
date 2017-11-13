@@ -18,7 +18,7 @@ if (!grep { $_ } values %errors)
     use strict;
     use warnings;
 
-    use 5.010001;
+    use 5.008001;
     # use Module::Build::Tiny 0.034;
     Module::Build::Tiny::Build_PL();
 }
@@ -91,7 +91,7 @@ EOW
       "requires" => {
         "List::UtilsBy" => "0.10",
         "Role::Tiny" => "2.000001",
-        "perl" => "5.010001"
+        "perl" => "5.008001"
       },
       "test_requires" => {
         "Exporter" => "5.57",
