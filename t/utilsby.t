@@ -7,6 +7,17 @@ use Scalar::Util qw(weaken isweak);
 use lib 't/lib';
 use Unrandom;
 
+my $collection_class = 'Mojo::Collection::ForTesting';
+{
+  local $@;
+  eval {
+    require Mojolicious;
+    require Mojo::Collection;
+    Mojolicious->VERSION('7.43');
+    $collection_class = 'Mojo::Collection';
+  };
+}
+
 {
   package Mojo::Collection::ForTesting;
   sub new {
@@ -15,7 +26,7 @@ use Unrandom;
   }
 }
 
-sub c { Role::Tiny->apply_roles_to_object(Mojo::Collection::ForTesting->new(@_), 'Mojo::Collection::Role::UtilsBy') }
+sub c { Role::Tiny->apply_roles_to_object($collection_class->new(@_), 'Mojo::Collection::Role::UtilsBy') }
 
 ### Tests adapted from List::UtilsBy
 

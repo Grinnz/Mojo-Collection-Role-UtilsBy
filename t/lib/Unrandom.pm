@@ -9,7 +9,7 @@ use Exporter 'import';
 our @EXPORT = qw( unrandomly );
 
 our $randhook;
-*CORE::GLOBAL::rand = sub { $randhook ? $randhook->( $_[0] ) : rand $_[0] };
+*CORE::GLOBAL::rand = sub { $randhook ? $randhook->( $_[0] ) : rand @_ };
 
 use constant VALUE => 0;
 use constant BELOW => 1;
