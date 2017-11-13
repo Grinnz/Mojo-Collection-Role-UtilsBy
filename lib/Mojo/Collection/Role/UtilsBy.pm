@@ -78,7 +78,9 @@ Mojo::Collection::Role::UtilsBy - List::UtilsBy methods for Mojo::Collection
 =head1 DESCRIPTION
 
 A role to augment L<Mojo::Collection> with methods that call functions from
-L<List::UtilsBy>.
+L<List::UtilsBy>. With the exception of L</"bundle_by">, all passed callbacks
+will be called with both `$_` and `$_[0]` set to the current element in the
+iteration.
 
 =head1 METHODS
 
@@ -86,10 +88,12 @@ L<Mojo::Collection::Role::UtilsBy> composes the following methods.
 
 =head2 bundle_by
 
-  my $bundled_collection = $c->bundle_by(sub { [@_] }, $n);
+  my $bundled_collection = $c->bundle_by(sub { c(@_) }, $n);
 
 Return a new collection containing the results from the passed function, given
-input elements in bundles of (up to) C<$n>, using L<List::UtilsBy/"bundle_by">.
+input elements in bundles of (up to) C<$n> at a time, using
+L<List::UtilsBy/"bundle_by">. The passed function will receive each bundle of
+inputs in `@_`, and will receive less than C<$n> if not enough elements remain.
 
 =head2 count_by
 
