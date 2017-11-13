@@ -82,7 +82,7 @@ Mojo::Collection::Role::UtilsBy - List::UtilsBy methods for Mojo::Collection
   my $partitions = $c->partition_by(sub { $_ % 4 });
   # { 0 => c(4,8,12), 1 => c(1,5,9), 2 => c(2,6,10), 3 => c(3,7,11) }
   
-  my $halves_and_remainders = $c->unzip_by(sub { ($_ / 2, $_ % 2) });
+  my $halves_and_remainders = $c->unzip_by(sub { (int($_ / 2), $_ % 2) });
   # c(c(0,1,1,2,2,3,3,4,4,5,5,6), c(1,0,1,0,1,0,1,0,1,0,1,0))
   
   my $transposed = $halves_and_remainders->zip_by(sub { c(@_) });
