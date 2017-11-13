@@ -6,6 +6,7 @@ use Scalar::Util qw(weaken isweak);
 
 use lib 't/lib';
 use Unrandom;
+no lib 't/lib';
 
 my $collection_class = 'Mojo::Collection::ForTesting';
 {
