@@ -5,7 +5,7 @@ use Role::Tiny ();
 use Scalar::Util qw(weaken isweak);
 
 use lib 't/lib';
-use Unrandom;
+use Unrandom 'unrandomly';
 no lib 't/lib';
 
 my $collection_class = 'Mojo::Collection::ForTesting';
