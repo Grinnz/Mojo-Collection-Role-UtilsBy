@@ -9,7 +9,7 @@ requires 'new';
 
 foreach my $func (qw(nsort_by rev_nsort_by rev_sort_by sort_by
                      uniq_by weighted_shuffle_by zip_by)) {
-  my $sub = List::UtilsBy->can($func) // die "Function List::UtilsBy::$func not found";
+  my $sub = List::UtilsBy->can($func) || die "Function List::UtilsBy::$func not found";
   no strict 'refs';
   *$func = sub {
     my ($self, $code) = @_;
@@ -18,7 +18,7 @@ foreach my $func (qw(nsort_by rev_nsort_by rev_sort_by sort_by
 }
 
 foreach my $func (qw(max_by min_by)) {
-  my $sub = List::UtilsBy->can($func) // die "Function List::UtilsBy::$func not found";
+  my $sub = List::UtilsBy->can($func) || die "Function List::UtilsBy::$func not found";
   no strict 'refs';
   *$func = sub {
     my ($self, $code) = @_;
