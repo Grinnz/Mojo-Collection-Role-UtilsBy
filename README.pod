@@ -37,7 +37,7 @@ L<Mojo::Collection::Role::UtilsBy> composes the following methods.
 
 =head2 all_max_by
 
-  my $max_collection = $c->all_max_by(sub { $_->num });
+  my $collection = $c->all_max_by(sub { $_->num });
 
 Return a new collection containing all of the elements that share the
 numerically largest result from the passed function, using
