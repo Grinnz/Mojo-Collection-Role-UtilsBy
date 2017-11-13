@@ -96,30 +96,30 @@ is_deeply( c("b", "a")->uniq_by(sub { $_[0] }), [ "b", "a" ], 'identity function
 is_deeply( c("a", "b", "cc", "dd", "eee")->uniq_by(sub { length $_ }), [ "a", "cc", "eee" ], 'length function' );
 
 ## partition_by
-is_deeply( { c()->partition_by(sub { }) }, {}, 'empty list' );
+is_deeply( c()->partition_by(sub { }), {}, 'empty list' );
 
-is_deeply( { c("a")->partition_by(sub { $_ }) }, { a => [ "a" ] }, 'unit list' );
+is_deeply( c("a")->partition_by(sub { $_ }), { a => [ "a" ] }, 'unit list' );
 
-is_deeply( { c("a")->partition_by(sub { my $ret = $_; undef $_; $ret }) }, { a => [ "a" ] }, 'localises $_' );
+is_deeply( c("a")->partition_by(sub { my $ret = $_; undef $_; $ret }), { a => [ "a" ] }, 'localises $_' );
 
-is_deeply( { c("a", "b")->partition_by(sub { "all" }) }, { all => [ "a", "b" ] }, 'constant function preserves order' );
-is_deeply( { c("b", "a")->partition_by(sub { "all" }) }, { all => [ "b", "a" ] }, 'constant function preserves order' );
+is_deeply( c("a", "b")->partition_by(sub { "all" }), { all => [ "a", "b" ] }, 'constant function preserves order' );
+is_deeply( c("b", "a")->partition_by(sub { "all" }), { all => [ "b", "a" ] }, 'constant function preserves order' );
 
-is_deeply( { c("b", "a")->partition_by(sub { $_[0] }) }, { a => [ "a" ], b => [ "b" ] }, 'identity function on $_[0]' );
+is_deeply( c("b", "a")->partition_by(sub { $_[0] }), { a => [ "a" ], b => [ "b" ] }, 'identity function on $_[0]' );
 
-is_deeply( { c("a", "b", "cc", "dd", "eee")->partition_by(sub { length $_ }) },
+is_deeply( c("a", "b", "cc", "dd", "eee")->partition_by(sub { length $_ }),
            { 1 => [ "a", "b" ], 2 => [ "cc", "dd" ], 3 => [ "eee" ] }, 'length function' );
 
 ## count_by
-is_deeply( { c()->count_by(sub { }) }, {}, 'empty list' );
+is_deeply( c()->count_by(sub { }), {}, 'empty list' );
 
-is_deeply( { c("a")->count_by(sub { $_ }) }, { a => 1 }, 'unit list' );
+is_deeply( c("a")->count_by(sub { $_ }), { a => 1 }, 'unit list' );
 
-is_deeply( { c("a", "b")->count_by(sub { "all" }) }, { all => 2 }, 'constant function' );
+is_deeply( c("a", "b")->count_by(sub { "all" }), { all => 2 }, 'constant function' );
 
-is_deeply( { c("b", "a")->count_by(sub { $_[0] }) }, { a => 1, b => 1 }, 'identity function on $_[0]' );
+is_deeply( c("b", "a")->count_by(sub { $_[0] }), { a => 1, b => 1 }, 'identity function on $_[0]' );
 
-is_deeply( { c("a", "b", "cc", "dd", "eee")->count_by(sub { length $_ }) },
+is_deeply( c("a", "b", "cc", "dd", "eee")->count_by(sub { length $_ }),
            { 1 => 2, 2 => 2, 3 => 1 }, 'length function' );
 
 ## extract_by
