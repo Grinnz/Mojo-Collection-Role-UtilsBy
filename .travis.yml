@@ -12,4 +12,4 @@ perl:
   - "5.8"
 install:
   - cpanm --quiet --installdeps --notest .
-  - cpanm --quiet --notest Mojolicious@7.43 || true
+  - cpanm --quiet --notest Mojolicious~7.43 || true
