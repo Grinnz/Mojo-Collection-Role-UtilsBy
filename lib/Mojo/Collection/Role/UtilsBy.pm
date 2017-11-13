@@ -17,8 +17,7 @@ foreach my $func (keys %functions_list, keys %functions_scalar) {
     no strict 'refs';
     *$func = sub {
       my ($self, $code) = @_;
-      my $class = ref $self;
-      return $class->new($sub->($code, @$self));
+      return ref($self)->new($sub->($code, @$self));
     };
   } elsif ($functions_scalar{$func}) {
     no strict 'refs';
@@ -31,8 +30,7 @@ foreach my $func (keys %functions_list, keys %functions_scalar) {
 
 sub bundle_by {
   my ($self, $code, $n) = @_;
-  my $class = ref $self;
-  return $class->new(&List::UtilsBy::bundle_by($code, $n, @$self));
+  return ref($self)->new(&List::UtilsBy::bundle_by($code, $n, @$self));
 }
 
 sub count_by {
@@ -42,8 +40,7 @@ sub count_by {
 
 sub extract_by {
   my ($self, $code) = @_;
-  my $class = ref $self;
-  return $class->new(&List::UtilsBy::extract_by($code, \@$self));
+  return ref($self)->new(&List::UtilsBy::extract_by($code, \@$self));
 }
 
 sub extract_first_by {
