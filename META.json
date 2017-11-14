@@ -26,7 +26,7 @@
    "prereqs" : {
       "configure" : {
          "requires" : {
-            "Module::Build::Tiny" : "0.034"
+            "ExtUtils::MakeMaker" : "0"
          }
       },
       "develop" : {
@@ -53,8 +53,8 @@
          },
          "requires" : {
             "Exporter" : "5.57",
+            "ExtUtils::MakeMaker" : "0",
             "File::Spec" : "0",
-            "Module::Metadata" : "0",
             "Scalar::Util" : "0",
             "Test::More" : "0.88"
          }
@@ -220,11 +220,11 @@
             "config" : {
                "Dist::Zilla::Plugin::CopyFilesFromRelease" : {
                   "filename" : [
-                     "Build.PL",
                      "CONTRIBUTING.md",
                      "INSTALL",
                      "LICENSE",
-                     "META.json"
+                     "META.json",
+                     "Makefile.PL"
                   ],
                   "match" : []
                }
@@ -243,12 +243,12 @@
                },
                "Dist::Zilla::Role::Git::DirtyFiles" : {
                   "allow_dirty" : [
-                     "Build.PL",
                      "CONTRIBUTING.md",
                      "Changes",
                      "INSTALL",
                      "LICENSE",
                      "META.json",
+                     "Makefile.PL",
                      "README.pod",
                      "dist.ini"
                   ],
@@ -369,11 +369,11 @@
                "Dist::Zilla::Plugin::GatherDir" : {
                   "exclude_filename" : [
                      "Build.PL",
-                     "Build.PL",
                      "CONTRIBUTING.md",
                      "INSTALL",
                      "LICENSE",
                      "META.json",
+                     "Makefile.PL",
                      "Makefile.PL"
                   ],
                   "exclude_match" : [],
@@ -457,39 +457,14 @@
             "version" : "6.010"
          },
          {
-            "class" : "Dist::Zilla::Plugin::ModuleBuildTiny::Fallback",
+            "class" : "Dist::Zilla::Plugin::MakeMaker",
             "config" : {
-               "Dist::Zilla::Plugin::ModuleBuildTiny::Fallback" : {
-                  "mb_version" : "0.28",
-                  "plugins" : [
-                     {
-                        "class" : "Dist::Zilla::Plugin::ModuleBuild",
-                        "config" : {
-                           "Dist::Zilla::Role::TestRunner" : {
-                              "default_jobs" : 1
-                           }
-                        },
-                        "name" : "ModuleBuild, via ModuleBuildTiny::Fallback",
-                        "version" : "6.010"
-                     },
-                     {
-                        "class" : "Dist::Zilla::Plugin::ModuleBuildTiny",
-                        "config" : {
-                           "Dist::Zilla::Role::TestRunner" : {
-                              "default_jobs" : 1
-                           }
-                        },
-                        "name" : "ModuleBuildTiny, via ModuleBuildTiny::Fallback",
-                        "version" : "0.015"
-                     }
-                  ]
-               },
                "Dist::Zilla::Role::TestRunner" : {
                   "default_jobs" : 1
                }
             },
-            "name" : "@Author::DBOOK/ModuleBuildTiny::Fallback",
-            "version" : "0.025"
+            "name" : "@Author::DBOOK/MakeMaker",
+            "version" : "6.010"
          },
          {
             "class" : "Dist::Zilla::Plugin::RunExtraTests",
