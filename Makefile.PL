@@ -18,7 +18,8 @@ my %WriteMakefileArgs = (
   "NAME" => "Mojo::Collection::Role::UtilsBy",
   "PREREQ_PM" => {
     "List::UtilsBy" => "0.10",
-    "Role::Tiny" => "2.000001"
+    "Role::Tiny" => "2.000001",
+    "Sub::Util" => "1.40"
   },
   "TEST_REQUIRES" => {
     "Exporter" => "5.57",
@@ -41,6 +42,7 @@ my %FallbackPrereqs = (
   "List::UtilsBy" => "0.10",
   "Role::Tiny" => "2.000001",
   "Scalar::Util" => 0,
+  "Sub::Util" => "1.40",
   "Test::More" => "0.88"
 );
 

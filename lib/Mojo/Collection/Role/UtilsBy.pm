@@ -2,6 +2,7 @@ package Mojo::Collection::Role::UtilsBy;
 
 use Role::Tiny;
 use List::UtilsBy ();
+use Sub::Util ();
 
 our $VERSION = '0.001';
 
@@ -11,7 +12,7 @@ foreach my $func (qw(nsort_by rev_nsort_by rev_sort_by sort_by
                      uniq_by weighted_shuffle_by zip_by)) {
   my $sub = List::UtilsBy->can($func) || die "Function List::UtilsBy::$func not found";
   no strict 'refs';
-  *$func = sub {
+  *$func = Sub::Util::set_subname __PACKAGE__ . "::$func", sub {
     my ($self, $code) = @_;
     return ref($self)->new($sub->($code, @$self));
   };
@@ -20,11 +21,11 @@ foreach my $func (qw(nsort_by rev_nsort_by rev_sort_by sort_by
 foreach my $func (qw(max_by min_by)) {
   my $sub = List::UtilsBy->can($func) || die "Function List::UtilsBy::$func not found";
   no strict 'refs';
-  *$func = sub {
+  *$func = Sub::Util::set_subname __PACKAGE__ . "::$func", sub {
     my ($self, $code) = @_;
     return scalar $sub->($code, @$self);
   };
-  *{"all_$func"} = sub {
+  *{"all_$func"} = Sub::Util::set_subname __PACKAGE__ . "::all_$func", sub {
     my ($self, $code) = @_;
     return ref($self)->new($sub->($code, @$self));
   };
